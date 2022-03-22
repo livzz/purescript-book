@@ -3,8 +3,10 @@ module Data.AddressBook where
 import Prelude
 
 import Control.Plus (empty)
-import Data.List (List(..), filter, head)
+import Data.List (List(..), filter, head, null, nubByEq)
 import Data.Maybe (Maybe)
+import Effect (Effect)
+import Effect.Console (log)
 
 type Address =
   { street :: String
@@ -33,14 +35,32 @@ showEntry entry = entry.lastName <> ", " <>
 emptyBook :: AddressBook
 emptyBook = empty
 
--- This line should have been automatically deleted by resetSolutions.sh. See Chapter 2 for instructions. NOTE TO MAINTAINER: If editing `insertEntry`, remember to also update the non-anchored (and unsimplified) version of this function that is hardcoded in the book text.
 insertEntry :: Entry -> AddressBook -> AddressBook
-insertEntry = Cons
+insertEntry entry book = Cons entry book
 
--- This line should have been automatically deleted by resetSolutions.sh. See Chapter 2 for instructions. NOTE TO MAINTAINER: If editing `findEntry`, remember to also update the non-anchored (and unsimplified) version of this function that is hardcoded in the book text.
 findEntry :: String -> String -> AddressBook -> Maybe Entry
-findEntry firstName lastName = head <<< filter filterEntry
+findEntry firstName lastName book = head (filter filterEntry book)
   where
-  filterEntry :: Entry -> Boolean
-  filterEntry entry = entry.firstName == firstName && entry.lastName == lastName
+    filterEntry :: Entry -> Boolean
+    filterEntry entry = entry.firstName == firstName && entry.lastName == lastName
 
+findEntryByStreet :: String -> AddressBook -> Maybe Entry
+findEntryByStreet street = head <<< filter filterEntry
+  where
+    filterEntry :: Entry -> Boolean
+    filterEntry entry = _.address.street entry == street
+
+isInBook :: String -> String -> AddressBook -> Boolean
+isInBook firstName lastName = not null <<< filter filterEntry
+  where
+    filterEntry :: Entry -> Boolean
+    filterEntry entry = entry.firstName == firstName && entry.lastName == lastName
+
+-- isDuplicate :: Entry -> Entry -> Boolean
+-- isDuplicate x y = x.firstName == y.firstName && x.lastName == y.lastName
+
+removeDuplicates :: AddressBook -> AddressBook
+removeDuplicates = nubByEq isDuplicate
+  where
+    isDuplicate :: Entry -> Entry -> Boolean
+    isDuplicate x y = x.firstName == y.firstName && x.lastName == y.lastName
