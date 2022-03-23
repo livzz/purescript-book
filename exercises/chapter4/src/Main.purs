@@ -21,7 +21,7 @@ import Prelude
 import Control.Plus (empty)
 import Data.Array (cons, head, null, tail)
 import Data.Int (toNumber)
-import Data.Maybe (Maybe(..),fromMaybe)
+import Data.Maybe (fromMaybe)
 import Effect (Effect)
 import Effect.Console (log)
 import Math ((%))
