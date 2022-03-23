@@ -19,7 +19,7 @@ module Main
 import Prelude
 
 import Control.Plus (empty)
-import Data.Array (cons, head, null, tail)
+import Data.Array (cons, filter, head, null, tail)
 import Data.Int (toNumber)
 import Data.Maybe (fromMaybe)
 import Effect (Effect)
@@ -101,7 +101,17 @@ countEven :: Array Int -> Int
 countEven arr =
   if null arr then 0
   else boolMapper (isEven $ fromMaybe 1 $ head arr) + countEven (fromMaybe [] $ tail arr)
-    
+
+
+squared :: Array Int -> Array Int
+squared = map (\n -> n * 2)
+
+keepNonNegative :: Array Int -> Array Int
+keepNonNegative numbers = filter helper numbers
+  where
+    helper :: Int -> Boolean
+    helper num = if num >= 0 then true else false
+
 
 main :: Effect Unit
 main = do
@@ -109,5 +119,7 @@ main = do
   log ("Is 12 even :" <> (show ( isEven 12)))
   log $ show $ isEven 95686
   log $ show $ countEvenHelper 0 lotsInts
+  log $ show $ squared [1,2,3]
+  log $ show $ keepNonNegative [1,2,3, -35]
   log "🍝"
   
