@@ -4,7 +4,7 @@ import Prelude
 
 import Control.Alternative (guard)
 import Control.Plus (empty)
-import Data.Array (cons, filter, head, length, null, range, tail)
+import Data.Array (cons, filter, foldl, head, length, null, range, tail)
 import Data.Int (toNumber)
 import Data.Maybe (fromMaybe)
 import Effect (Effect)
@@ -135,6 +135,23 @@ primeFactors num = factorize 2 num
         factorize (dinominator + 1) numarator
 
 
+allTrue :: Array Boolean -> Boolean
+allTrue bools = foldl (\acc bool -> acc && bool) true bools
+
+
+fibTailRec :: Int -> Int
+fibTailRec 0 = 0
+fibTailRec 1 = 1
+fibTailRec n = fib' n 2 0 1
+  where
+  fib' :: Int -> Int -> Int -> Int -> Int
+  fib' limit count n1 n2 =
+    if limit == count then
+      n1 + n2
+    else
+      fib' limit (count + 1) n2 (n1 + n2)
+
+
 main :: Effect Unit
 main = do
   log ("Is 9 even :" <> (show ( isEven 9)))
@@ -145,6 +162,7 @@ main = do
   log $ show $ keepNonNegative [1.0,2.0,3.0, -35.0]
   log $ show $ isPrime 9
   log $ show $ cartesianProduct [1.0,2.0,3.0] [1.0,2.0,3.0]
-  log $ show $ triples 3  
+  log $ show $ triples 10 
+  log $ show $ allTrue [true, true, true]
   log "🍝"
   
